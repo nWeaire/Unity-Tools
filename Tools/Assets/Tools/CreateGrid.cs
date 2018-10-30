@@ -9,6 +9,8 @@ public class CreateGrid : ScriptableWizard
     public int GridDepth = 0;
     public bool Hollow = false;
     public Vector3 CellDimensions = Vector3.zero;
+    [Tooltip("Temporary layer for editting tool")]
+    public int m_nLayerNumber = 0;
     private GameObject[,,] m_gGrid = null;
     private GameObject m_gGridParent;
     private GameObject[] m_gLayers;
@@ -47,6 +49,11 @@ public class CreateGrid : ScriptableWizard
                             m_gGrid[i, j, k].transform.position = m_gGridParent.transform.position + new Vector3(cellDimensions.x * i, cellDimensions.y * j, cellDimensions.z * k);
                             m_gGrid[i, j, k].transform.SetParent(m_gLayers[j].transform);
                             m_gGrid[i, j, k].transform.localScale = cellDimensions;
+                            m_gGrid[i, j, k].AddComponent<Rigidbody>();
+                            m_gGrid[i, j, k].GetComponent<Rigidbody>().isKinematic = true;
+                            m_gGrid[i, j, k].GetComponent<BoxCollider>().isTrigger = true;
+                            m_gGrid[i, j, k].name = "Tile";
+                            m_gGrid[i, j, k].layer = m_nLayerNumber;
                         }
                     }
                     else
