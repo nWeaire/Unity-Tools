@@ -25,10 +25,12 @@ public class CreateGrid : ScriptableWizard
         m_gGrid = new GameObject[gridWidth, gridHeight, gridDepth];
         m_gLayers = new GameObject[gridHeight];
         m_gGridParent = new GameObject("Grid_Parent");
+        m_gGridParent.layer = m_nLayerNumber;
         for (int i = 0; i < gridHeight; i++)
         {
             m_gLayers[i] = new GameObject("Layer" + i);
             m_gLayers[i].transform.SetParent(m_gGridParent.transform);
+            m_gLayers[i].layer = m_nLayerNumber;
         }
         for (int i = 0; i < gridWidth; i++)
         {
@@ -40,11 +42,6 @@ public class CreateGrid : ScriptableWizard
                     {
                         if (i == 0 || j == 0 || k == 0 || i == gridWidth - 1 || j == gridHeight - 1 || k == gridDepth - 1)
                         {
-                            //m_gGrid[i, j, k] = Instantiate(GameObject.CreatePrimitive(PrimitiveType.Cube),
-                            //m_gGridParent.transform.position + new Vector3(cellDimensions.x * i, cellDimensions.y * j, cellDimensions.z * k),
-                            // Quaternion.identity,
-                            // m_gLayers[j].transform);
-
                             m_gGrid[i, j, k] = GameObject.CreatePrimitive(PrimitiveType.Cube);
                             m_gGrid[i, j, k].transform.position = m_gGridParent.transform.position + new Vector3(cellDimensions.x * i, cellDimensions.y * j, cellDimensions.z * k);
                             m_gGrid[i, j, k].transform.SetParent(m_gLayers[j].transform);
@@ -58,16 +55,15 @@ public class CreateGrid : ScriptableWizard
                     }
                     else
                     {
-                        //m_gGrid[i, j, k] = Instantiate(GameObject.CreatePrimitive(PrimitiveType.Cube),
-                        //m_gGridParent.transform.position + new Vector3(cellDimensions.x * i, cellDimensions.y * j, cellDimensions.z * k),
-                        //Quaternion.identity,
-                        //m_gLayers[j].transform);
-                        //m_gGrid[i, j, k].transform.localScale = cellDimensions;
-
                         m_gGrid[i, j, k] = GameObject.CreatePrimitive(PrimitiveType.Cube);
                         m_gGrid[i, j, k].transform.position = m_gGridParent.transform.position + new Vector3(cellDimensions.x * i, cellDimensions.y * j, cellDimensions.z * k);
                         m_gGrid[i, j, k].transform.SetParent(m_gLayers[j].transform);
                         m_gGrid[i, j, k].transform.localScale = cellDimensions;
+                        m_gGrid[i, j, k].AddComponent<Rigidbody>();
+                        m_gGrid[i, j, k].GetComponent<Rigidbody>().isKinematic = true;
+                        m_gGrid[i, j, k].GetComponent<BoxCollider>().isTrigger = true;
+                        m_gGrid[i, j, k].name = "Tile";
+                        m_gGrid[i, j, k].layer = m_nLayerNumber;
                     }
                 }
             }
